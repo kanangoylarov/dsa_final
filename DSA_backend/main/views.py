@@ -81,7 +81,7 @@ class QeydiyyatViewSet(viewsets.ModelViewSet):
 
 class BootcampsViewSet(viewsets.ModelViewSet):
     queryset = Bootcamps.objects.all().prefetch_related(
-        'bootcamp_tipi__təlimlər'
+        'bootcamp_tipi__telimler'
  
     )  
     serializer_class = BootcampsSerializer

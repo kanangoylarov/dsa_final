@@ -116,10 +116,7 @@ class QeydiyyatSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class BootcampsSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Bootcamps
-        fields = '__all__'
+
 
 
 class BootcampTipiSerializer(serializers.ModelSerializer):
@@ -127,6 +124,14 @@ class BootcampTipiSerializer(serializers.ModelSerializer):
         model = BootcampTipi
         fields = '__all__'
 
+class BootcampsSerializer(serializers.ModelSerializer):
+    bootcamp_tipi = BootcampTipiSerializer(many=True, read_only=True)  
+
+    class Meta:
+        model = Bootcamps
+        fields = '__all__'
+        
+        
 
 class TəlimlərSerializer(serializers.ModelSerializer):
     class Meta:
