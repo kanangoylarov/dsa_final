@@ -59,7 +59,7 @@ class Qeydiyyat(models.Model):
 class Bootcamps(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -73,7 +73,7 @@ class Bootcamps(models.Model):
 class BootcampTipi(models.Model):
     bootcamp = models.ForeignKey(Bootcamps, on_delete=models.CASCADE, related_name='bootcamp_tipi')
     name = models.CharField(max_length=100)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -86,9 +86,9 @@ class BootcampTipi(models.Model):
     
 class Təlimlər(models.Model):
     id = models.AutoField(primary_key=True)
-    bootcamp_type = models.ForeignKey(BootcampTipi, on_delete=models.CASCADE, related_name='telimler')
+    bootcamp_tipi = models.ForeignKey(BootcampTipi, on_delete=models.CASCADE, related_name='telimler')
     is_active = models.BooleanField(default=True)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     title = models.TextField(max_length=100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -172,7 +172,7 @@ class Təlimçilər(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.name} {self.surname}'
+        return f'{self.name}'
 
 
     

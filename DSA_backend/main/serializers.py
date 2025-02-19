@@ -1,84 +1,3 @@
-# from rest_framework import serializers
-# from .models import Mətinlər, Müraciət, Əlaqə, Qeydiyyat, Sessiyalar, Nümayişlər, Sillabuslar, Təlimçilər,Məzunlar,Müəllimlər
-
-
-
-# class ApplySerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Müraciət
-#         fields = '__all__'
-        
-        
-        
-# class ContactSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Əlaqə
-#         fields = '__all__'
-        
-        
-        
-# class SubscribeSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Qeydiyyat
-#         fields = '__all__'
-
-
-
-# class SessionsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Sessiyalar
-#         fields = '__all__'
-
-# class BroadcastsSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Nümayişlər
-#         fields = '__all__'
-
-# class SyllabusSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Sillabuslar
-#         fields = '__all__'
-        
-# class TrainerSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Təlimçilər
-#         fields = '__all__'
-
-# class ScriptsSerializer(serializers.ModelSerializer):
-#     sessions = SessionsSerializer(many=True, read_only=True)
-#     broadcast = BroadcastsSerializer(read_only=True)
-#     syllabus = SyllabusSerializer(many=True, read_only=True)
-#     Trainer = TrainerSerializer(many=True, read_only=True)
-
-#     class Meta:
-#         model = Mətinlər
-#         fields = '__all__'
-
-#     def get_broadcast(self, obj):
-#         if hasattr(obj, 'broadcast'):
-#             return BroadcastsSerializer(obj.broadcast).data
-#         return None 
-
-
-
-# class TeachersSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Müəllimlər
-#         fields = '__all__'
-        
-        
-# class GraduatesSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Məzunlar
-#         fields = '__all__'
-
-
-
-
-
-
-
-
 from rest_framework import serializers
 from .models import (
     Müraciət,
@@ -97,29 +16,24 @@ from .models import (
     FAQ
 )
 
+class TəlimlərSerializer(serializers.ModelSerializer):
+    money = serializers.SerializerMethodField()
 
-class MüraciətSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Müraciət
-        fields = '__all__'
+        model = Təlimlər
+        fields = '__all__'  
 
+    def get_money(self, obj):
+        metinler = Mətinlər.objects.filter(trainings=obj)
 
-class ƏlaqəSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Əlaqə
-        fields = '__all__'
-
-
-class QeydiyyatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Qeydiyyat
-        fields = '__all__'
-
-
-
+        if metinler.exists():
+            return min(metinler.values_list('money', flat=True)) 
+        return None
 
 
 class BootcampTipiSerializer(serializers.ModelSerializer):
+    telimler = TəlimlərSerializer(many=True, read_only=True) 
+
     class Meta:
         model = BootcampTipi
         fields = '__all__'
@@ -130,18 +44,20 @@ class BootcampsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bootcamps
         fields = '__all__'
-        
-        
 
-class TəlimlərSerializer(serializers.ModelSerializer):
+class MüraciətSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Təlimlər
+        model = Müraciət
         fields = '__all__'
 
-
-class MətinlərSerializer(serializers.ModelSerializer):
+class ƏlaqəSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Mətinlər
+        model = Əlaqə
+        fields = '__all__'
+
+class QeydiyyatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Qeydiyyat
         fields = '__all__'
 
 
@@ -150,38 +66,43 @@ class SessiyalarSerializer(serializers.ModelSerializer):
         model = Sessiyalar
         fields = '__all__'
 
-
 class NümayişlərSerializer(serializers.ModelSerializer):
     class Meta:
         model = Nümayişlər
         fields = '__all__'
-
 
 class SillabuslarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sillabuslar
         fields = '__all__'
 
-
 class TəlimçilərSerializer(serializers.ModelSerializer):
     class Meta:
         model = Təlimçilər
         fields = '__all__'
-
 
 class MüəllimlərSerializer(serializers.ModelSerializer):
     class Meta:
         model = Müəllimlər
         fields = '__all__'
 
-
 class MəzunlarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Məzunlar
         fields = '__all__'
 
-
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
+        fields = '__all__'
+
+
+class MətinlərSerializer(serializers.ModelSerializer):
+    sessiyalar = SessiyalarSerializer(many=True, read_only=True)  
+    nümayislər = NümayişlərSerializer( read_only=True)
+    syllabus = SillabuslarSerializer(many=True, read_only=True)
+    trainers = TəlimçilərSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Mətinlər
         fields = '__all__'
